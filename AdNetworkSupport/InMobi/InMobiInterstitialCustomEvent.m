@@ -9,8 +9,6 @@
 #import "MPInstanceProvider.h"
 #import "MPLogging.h"
 
-#define kInMobiAppID    @"YOUR_INMOBI_APP_ID"
-
 @interface MPInstanceProvider (InMobiInterstitials)
 
 - (IMInterstitial *)buildIMInterstitialWithDelegate:(id<IMInterstitialDelegate>)delegate appId:(NSString *)appId;
@@ -45,6 +43,14 @@
 - (void)requestInterstitialWithCustomEventInfo:(NSDictionary *)info
 {
     MPLogInfo(@"Requesting InMobi interstitial");
+    
+    NSString *kInMobiAppID = [info objectForKey:@"appId"];
+    static BOOL isInited_ = NO;
+    if (!isInited_) {
+        isInited_ = YES;
+        [InMobi initialize:kInMobiAppID];
+    }
+
     self.inMobiInterstitial = [[MPInstanceProvider sharedProvider] buildIMInterstitialWithDelegate:self appId:kInMobiAppID];
     NSMutableDictionary *paramsDict = [NSMutableDictionary dictionary];
     [paramsDict setObject:@"c_mopub" forKey:@"tp"];

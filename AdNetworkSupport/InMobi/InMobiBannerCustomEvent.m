@@ -10,7 +10,6 @@
 #import "MPConstants.h"
 #import "MPLogging.h"
 
-#define kInMobiAppID            @"YOUR_INMOBI_APP_ID"
 #define INVALID_INMOBI_AD_SIZE  -1
 
 @interface MPInstanceProvider (InMobiBanners)
@@ -52,6 +51,14 @@
         return;
     }
 
+    NSString *kInMobiAppID = [info objectForKey:@"appId"];
+    
+    static BOOL isInited_ = NO;
+    if (!isInited_) {
+        isInited_ = YES;
+        [InMobi initialize:kInMobiAppID];
+    }
+    
     self.inMobiBanner = [[MPInstanceProvider sharedProvider] buildIMBannerWithFrame:CGRectMake(0, 0, size.width, size.height) appId:kInMobiAppID adSize:imAdSizeConstant];
     self.inMobiBanner.delegate = self;
     self.inMobiBanner.refreshInterval = REFRESH_INTERVAL_OFF;
