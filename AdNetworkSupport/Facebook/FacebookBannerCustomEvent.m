@@ -14,7 +14,8 @@
 
 - (FBAdView *)buildFBAdViewWithPlacementID:(NSString *)placementID
                         rootViewController:(UIViewController *)controller
-                                  delegate:(id<FBAdViewDelegate>)delegate;
+                                  delegate:(id<FBAdViewDelegate>)delegate
+                                      size:(CGSize)size;
 @end
 
 @implementation MPInstanceProvider (FacebookBanners)
@@ -22,9 +23,11 @@
 - (FBAdView *)buildFBAdViewWithPlacementID:(NSString *)placementID
                         rootViewController:(UIViewController *)controller
                                   delegate:(id<FBAdViewDelegate>)delegate
+                                      size:(CGSize)size
 {
+    FBAdSize fbSize = size.height==90?kFBAdSizeHeight90Banner : size.width==320?kFBAdSize320x50: kFBAdSizeHeight50Banner;
     FBAdView *adView = [[FBAdView alloc] initWithPlacementID:placementID
-                                                       adSize:kFBAdSize320x50
+                                                       adSize:fbSize
                                            rootViewController:controller];
     adView.delegate = delegate;
     return adView;
@@ -47,7 +50,7 @@
 
 - (void)requestAdWithSize:(CGSize)size customEventInfo:(NSDictionary *)info
 {
-    if (!CGSizeEqualToSize(size, kFBAdSize320x50.size)) {
+    if (size.height!=50 && size.height!=90) {
         MPLogError(@"Invalid size for Facebook banner ad");
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError:nil];
         return;
@@ -63,7 +66,8 @@
     self.fbAdView =
         [[MPInstanceProvider sharedProvider] buildFBAdViewWithPlacementID:[info objectForKey:@"placement_id"]
                                                        rootViewController:[self.delegate viewControllerForPresentingModalView]
-                                                                 delegate:self];
+                                                                 delegate:self
+                                                                     size:size];
 
     if (!self.fbAdView) {
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError:nil];
