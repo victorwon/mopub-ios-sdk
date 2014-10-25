@@ -106,7 +106,7 @@
 
 // @optional
 - (void)adViewDidFailToLoad:(AmazonAdView *)view withError:(AmazonAdError *)error {
-    MPLogInfo(@"Amazon Banner failed to load with error: %@", error);
+    MPLogInfo(@"Amazon Banner failed to load with error: %@", error.errorDescription);
     [self.delegate bannerCustomEvent:self didFailToLoadAdWithError:[NSError errorWithDomain:@"AmazonBannerAd" code:error.errorCode userInfo:nil]];
 }
 

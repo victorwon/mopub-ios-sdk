@@ -85,7 +85,7 @@
 
 - (void)interstitialDidFailToLoad:(AmazonAdInterstitial *)interstitial withError:(AmazonAdError *)error
 {
-    MPLogInfo(@"Amazon Interstitial failed to load with error: %@", error);
+    MPLogInfo(@"Amazon Interstitial failed to load with error: %@", error.errorDescription);
     [self.delegate interstitialCustomEvent:self didFailToLoadAdWithError:[NSError errorWithDomain:@"AmazonIntAd" code:error.errorCode userInfo:nil]];
 
 }
