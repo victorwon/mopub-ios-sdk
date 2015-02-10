@@ -63,6 +63,12 @@ static NSString *gAppId = nil;
     if ([appId length] == 0) {
         appId = [info objectForKey:@"appId"];
     }
+    
+    static BOOL isInited_ = NO;
+    if (!isInited_) {
+        isInited_ = YES;
+        [InMobi initialize:appId];
+    }
 
     self.inMobiBanner = [[MPInstanceProvider sharedProvider] buildIMBannerWithFrame:CGRectMake(0, 0, size.width, size.height) appId:appId adSize:imAdSizeConstant];
 

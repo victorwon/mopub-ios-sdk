@@ -57,6 +57,12 @@ static NSString *gAppId = nil;
     if ([appId length] == 0) {
         appId = [info objectForKey:@"appId"];
     }
+    
+    static BOOL isInited_ = NO;
+    if (!isInited_) {
+        isInited_ = YES;
+        [InMobi initialize:appId];
+    }
 
     self.inMobiInterstitial = [[MPInstanceProvider sharedProvider] buildIMInterstitialWithDelegate:self appId:appId];
 
