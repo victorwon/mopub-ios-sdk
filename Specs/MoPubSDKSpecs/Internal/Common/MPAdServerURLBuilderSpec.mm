@@ -5,6 +5,7 @@
 #import "TWTweetComposeViewController+MPSpecs.h"
 #import "FakeMPGeolocationProvider.h"
 #import <CoreLocation/CoreLocation.h>
+#import "MPAPIEndpoints.h"
 
 using namespace Cedar::Matchers;
 using namespace Cedar::Doubles;
@@ -263,51 +264,6 @@ describe(@"MPAdServerURLBuilder", ^{
         URL.absoluteString should contain([NSString stringWithFormat:@"&dn=%@", [[[UIDevice currentDevice] hardwareDeviceName] URLEncodedString]]);
     });
 
-    describe(@"Twitter Availability", ^{
-        beforeEach(^{
-            [fakeCoreProvider resetTwitterAppInstallCheck];
-            [[UIApplication sharedApplication] setTwitterInstalled:NO];
-            [TWTweetComposeViewController setNativeTwitterAvailable:NO];
-        });
-
-        it(@"should not pass a query if no twitter is available", ^{
-            URL = [MPAdServerURLBuilder URLWithAdUnitID:@"guy"
-                                               keywords:nil
-                                               location:nil
-                                                testing:YES];
-            URL.absoluteString should_not contain([NSString stringWithFormat:@"&ts="]);
-        });
-
-        it(@"should create query for only having twitter app installed", ^{
-            [[UIApplication sharedApplication] setTwitterInstalled:YES];
-            URL = [MPAdServerURLBuilder URLWithAdUnitID:@"guy"
-                                               keywords:nil
-                                               location:nil
-                                                testing:YES];
-            URL.absoluteString should contain([NSString stringWithFormat:@"&ts=1"]);
-        });
-
-        it(@"should create query for only having native twitter account(s)", ^{
-            [TWTweetComposeViewController setNativeTwitterAvailable:YES];
-            URL = [MPAdServerURLBuilder URLWithAdUnitID:@"guy"
-                                               keywords:nil
-                                               location:nil
-                                                testing:YES];
-            URL.absoluteString should contain([NSString stringWithFormat:@"&ts=2"]);
-
-        });
-
-        it(@"should create query for having both twitter app and native account(s)", ^{
-            [[UIApplication sharedApplication] setTwitterInstalled:YES];
-            [TWTweetComposeViewController setNativeTwitterAvailable:YES];
-            URL = [MPAdServerURLBuilder URLWithAdUnitID:@"guy"
-                                               keywords:nil
-                                               location:nil
-                                                testing:YES];
-            URL.absoluteString should contain([NSString stringWithFormat:@"&ts=3"]);
-        });
-    });
-
     describe(@"desired assets", ^{
         it(@"should append desired ad assets as a query parameter", ^{
             NSArray *assets = [NSArray arrayWithObjects:@"a", @"b", @"c", nil];
@@ -360,6 +316,27 @@ describe(@"MPAdServerURLBuilder", ^{
                                           desiredAssets:nil];
 
             URL.absoluteString should_not contain(@"&seq");
+        });
+    });
+
+    context(@"when HTTPS is enabled", ^{
+        beforeEach(^{
+            [MPAPIEndpoints setUsesHTTPS:YES];
+        });
+
+        afterEach(^{
+            [MPAPIEndpoints setUsesHTTPS:NO];
+        });
+
+        it(@"should return HTTPS URLs", ^{
+            URL = [MPAdServerURLBuilder URLWithAdUnitID:@"guy"
+                                               keywords:nil
+                                               location:nil
+                                                testing:NO];
+            expected = [NSString stringWithFormat:@"https://ads.mopub.com/m/ad?v=8&udid=%@&id=guy&nv=%@",
+                        [MPIdentityProvider identifier],
+                        MP_SDK_VERSION];
+            URL.absoluteString should contain(expected);
         });
     });
 });
