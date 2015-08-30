@@ -5,11 +5,12 @@ Thanks for taking a look at MoPub! We take pride in having an easy-to-use, flexi
 Sign up for an account at [http://app.mopub.com/](http://app.mopub.com/).
 
 ## Need Help?
+
 You can find integration documentation on our [wiki](https://github.com/mopub/mopub-ios-sdk/wiki/Getting-Started) and additional help documentation on our [developer help site](http://dev.twitter.com/mopub).
 
-To file an issue with our team visit the [MoPub Forum](https://twittercommunity.com/c/fabric/mopub).
+To file an issue with our team visit the [MoPub Forum](https://twittercommunity.com/c/fabric/mopub) or email [support@mopub.com](mailto:support@mopub.com).
 
-**Note: We will be deprecating the use of GitHub issues in the near future and migrating all issues to the forum to provide a faster response time.**
+**Please Note: We no longer accept GitHub Issues**
 
 ## Download
 
@@ -23,7 +24,7 @@ The MoPub SDK is distributed as source code that you can include in your applica
 
   Includes everything you need to serve HTML, MRAID, and Native MoPub advertisements.  No third party ad networks are included.
 
-The current version of the SDK is 3.8.0
+The current version of the SDK is 3.11.0
 
 ## Integrate
 
@@ -35,8 +36,7 @@ More detailed class documentation is available in the repo under the `ClassDocum
 
 Please view the [changelog](https://github.com/mopub/mopub-ios-sdk/blob/master/CHANGELOG.md) for details.
 
-- **Minor improvements**.
-	
+- **Updated Millennial Media custom events (Millennial Media SDK 6.0+ only)**.
 
 ### IMPORTANT UPGRADE INSTRUCTIONS
 
