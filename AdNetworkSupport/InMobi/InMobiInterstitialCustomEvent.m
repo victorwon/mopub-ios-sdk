@@ -13,8 +13,6 @@
 
 static NSString *gAppId = nil;
 
-#define kInMobiAppID    @"YOUR_INMOBI_APP_ID"
-
 @interface MPInstanceProvider (InMobiInterstitials)
 
 - (IMInterstitial *)buildIMInterstitialWithDelegate:(id<IMInterstitialDelegate>)delegate appId:(NSString *)appId;
@@ -57,10 +55,17 @@ static NSString *gAppId = nil;
 
     NSString *appId = gAppId;
     if ([appId length] == 0) {
-        appId = kInMobiAppID;
+        appId = [info objectForKey:@"appId"];
+    }
+    
+    static BOOL isInited_ = NO;
+    if (!isInited_) {
+        isInited_ = YES;
+        [InMobi initialize:appId];
     }
 
     self.inMobiInterstitial = [[MPInstanceProvider sharedProvider] buildIMInterstitialWithDelegate:self appId:appId];
+
     NSMutableDictionary *paramsDict = [NSMutableDictionary dictionary];
     [paramsDict setObject:@"c_mopub" forKey:@"tp"];
     [paramsDict setObject:MP_SDK_VERSION forKey:@"tp-ver"];

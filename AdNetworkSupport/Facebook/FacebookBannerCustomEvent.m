@@ -69,25 +69,25 @@
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError:nil];
         return;
     }
-
+    
     if (![info objectForKey:@"placement_id"]) {
         MPLogError(@"Placement ID is required for Facebook banner ad");
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError:nil];
         return;
     }
-
+    
     MPLogInfo(@"Requesting Facebook banner ad");
     self.fbAdView =
-        [[MPInstanceProvider sharedProvider] buildFBAdViewWithPlacementID:[info objectForKey:@"placement_id"]
-                                                                     size:fbAdSize
-                                                       rootViewController:[self.delegate viewControllerForPresentingModalView]
-                                                                 delegate:self];
-
+    [[MPInstanceProvider sharedProvider] buildFBAdViewWithPlacementID:[info objectForKey:@"placement_id"]
+                                                                 size:fbAdSize
+                                                   rootViewController:[self.delegate viewControllerForPresentingModalView]
+                                                             delegate:self];
+    
     if (!self.fbAdView) {
         [self.delegate bannerCustomEvent:self didFailToLoadAdWithError:nil];
         return;
     }
-
+    
     /*
      * Manually resize the frame of the FBAdView due to a bug in the Facebook SDK that sets the ad's width
      * to the width of the device instead of the width of the container it's placed in.
@@ -96,7 +96,7 @@
     CGRect fbAdFrame = self.fbAdView.frame;
     fbAdFrame.size = size;
     self.fbAdView.frame = fbAdFrame;
-
+    
     [self.fbAdView loadAd];
 }
 

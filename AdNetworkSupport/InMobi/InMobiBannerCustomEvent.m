@@ -11,7 +11,6 @@
 #import "MPConstants.h"
 #import "MPLogging.h"
 
-#define kInMobiAppID            @"YOUR_INMOBI_APP_ID"
 #define INVALID_INMOBI_AD_SIZE  -1
 
 static NSString *gAppId = nil;
@@ -62,10 +61,17 @@ static NSString *gAppId = nil;
 
     NSString *appId = gAppId;
     if ([appId length] == 0) {
-        appId = kInMobiAppID;
+        appId = [info objectForKey:@"appId"];
+    }
+    
+    static BOOL isInited_ = NO;
+    if (!isInited_) {
+        isInited_ = YES;
+        [InMobi initialize:appId];
     }
 
     self.inMobiBanner = [[MPInstanceProvider sharedProvider] buildIMBannerWithFrame:CGRectMake(0, 0, size.width, size.height) appId:appId adSize:imAdSizeConstant];
+
     self.inMobiBanner.delegate = self;
     self.inMobiBanner.refreshInterval = REFRESH_INTERVAL_OFF;
     NSMutableDictionary *paramsDict = [[NSMutableDictionary alloc] init];
