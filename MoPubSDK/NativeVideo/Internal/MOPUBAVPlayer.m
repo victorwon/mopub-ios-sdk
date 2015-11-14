@@ -169,9 +169,9 @@ static NSString * const MPAVPlayerItemLoadErrorTemplate = @"Loading player item 
 #pragma mark - disconnect/reconnect handling
 - (void)checkNetworkStatus:(NSNotification *)notice
 {
-    NetworkStatus remoteHostStatus = [self.reachability currentReachabilityStatus];
+    MPNetworkStatus remoteHostStatus = [self.reachability currentReachabilityStatus];
 
-    if (remoteHostStatus == NotReachable) {
+    if (remoteHostStatus == MPNotReachable) {
         if (!self.rate) {
             [self pause];
             if ([self.delegate respondsToSelector:@selector(avPlayerDidStall:)]) {
