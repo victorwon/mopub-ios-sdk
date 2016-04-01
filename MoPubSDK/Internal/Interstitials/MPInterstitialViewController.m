@@ -142,7 +142,7 @@ static NSString * const kCloseButtonXImageName = @"MPCloseButtonX.png";
             self.closeButton.hidden = NO;
             break;
         case MPInterstitialCloseButtonStyleAlwaysHidden:
-            self.closeButton.hidden = YES;
+            self.closeButton.hidden = NO;	// should always show close button
             break;
         case MPInterstitialCloseButtonStyleAdControlled:
             self.closeButton.hidden = ![self shouldDisplayCloseButton];

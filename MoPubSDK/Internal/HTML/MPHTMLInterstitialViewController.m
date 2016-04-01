@@ -42,6 +42,15 @@
     self.backingView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
         UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.backingView];
+    
+    // -- add explicit close button instead of relying on html embedded close button, by Victor
+    UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    closeButton.frame = CGRectMake(0, 0, 40, 40);
+    NSBundle *bundle = [NSBundle bundleForClass:[MPHTMLInterstitialViewController class]];
+    [closeButton setImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"MPCloseButtonX" ofType:@"png"]] forState:UIControlStateNormal];
+    [closeButton addTarget:self action:@selector(dismissInterstitialAnimated:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:closeButton];
+
 }
 
 #pragma mark - Public
