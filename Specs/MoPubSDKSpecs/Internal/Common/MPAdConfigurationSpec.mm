@@ -9,6 +9,7 @@
 #import "MPiAdInterstitialCustomEvent.h"
 #import "MPHTMLInterstitialCustomEvent.h"
 #import "MPMRAIDInterstitialCustomEvent.h"
+#import <Cedar/Cedar.h>
 
 using namespace Cedar::Matchers;
 using namespace Cedar::Doubles;
@@ -267,6 +268,12 @@ describe(@"MPAdConfiguration", ^{
         configuration.rewardedVideoReward.currencyType should equal(@"gold");
         configuration.rewardedVideoReward.amount.intValue should equal(1234);
 
+    });
+
+    it(@"should have completion url for rewarded video server to server", ^{
+        headers = @{kRewardedVideoCompletionUrlHeaderKey: @"http://ads.mopub.com/m/rewarded_video_completion?req=332dbe5798d644309d9d950321d37e3c&reqt=1460590468.0&id=54c94899972a4d4fb00c9cbf0fd08141&cid=303d4529ee3b42e7ac1f5c19caf73515&udid=ifa%3A3E67D059-6F94-4C88-AD2A-72539FE13795&cppck=09CCC"};
+        configuration = [[MPAdConfiguration alloc] initWithHeaders:headers data:nil];
+        configuration.rewardedVideoCompletionUrl should_not be_nil;
     });
 
     it(@"should process the nativeSDKParameters", ^{
