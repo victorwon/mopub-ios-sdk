@@ -7,7 +7,7 @@
 
 #import "FakeMPInstanceProvider.h"
 #import <MediaPlayer/MediaPlayer.h>
-#import "MPAdWebView.h"
+#import "MPWebView.h"
 #import "FakeMPTimer.h"
 #import "MRBundleManager.h"
 #import <FBAudienceNetwork/FBAudienceNetwork.h>
@@ -32,10 +32,6 @@
 - (GADBannerView *)buildGADBannerViewWithFrame:(CGRect)frame;
 - (GADRequest *)buildGADInterstitialRequest;
 - (GADInterstitial *)buildGADInterstitialAd;
-
-#pragma mark Greystripe
-- (GSBannerAdView *)buildGreystripeBannerAdViewWithDelegate:(id<GSAdDelegate>)delegate GUID:(NSString *)GUID size:(CGSize)size;
-- (GSFullscreenAd *)buildGSFullscreenAdWithDelegate:(id<GSAdDelegate>)delegate GUID:(NSString *)GUID;
 
 #pragma mark InMobi
 - (IMBanner *)buildIMBannerWithFrame:(CGRect)frame appId:(NSString *)appId adSize:(int)adSize;
@@ -154,14 +150,17 @@
 }
 #pragma mark - HTML Ads
 
-- (MPAdWebView *)buildMPAdWebViewWithFrame:(CGRect)frame delegate:(id<UIWebViewDelegate>)delegate
+- (MPWebView *)buildMPWebViewWithFrame:(CGRect)frame delegate:(id<MPWebViewDelegate>)delegate
 {
-    if (self.fakeMPAdWebView) {
-        self.fakeMPAdWebView.frame = frame;
-        self.fakeMPAdWebView.delegate = delegate;
-        return self.fakeMPAdWebView;
+    if (self.fakeMPWebView) {
+        self.fakeMPWebView.frame = frame;
+        self.fakeMPWebView.delegate = delegate;
+        return self.fakeMPWebView;
     } else {
-        return [super buildMPAdWebViewWithFrame:frame delegate:delegate];
+        MPWebView *newWebView = [[MPWebView alloc] initWithFrame:frame];
+        newWebView.delegate = delegate;
+
+        return newWebView;
     }
 }
 
@@ -176,7 +175,7 @@
 
 #pragma mark - MRAID
 
-- (MPClosableView *)buildMRAIDMPClosableViewWithFrame:(CGRect)frame webView:(UIWebView *)webView delegate:(id<MPClosableViewDelegate>)delegate
+- (MPClosableView *)buildMRAIDMPClosableViewWithFrame:(CGRect)frame webView:(MPWebView *)webView delegate:(id<MPClosableViewDelegate>)delegate
 {
     if (self.fakeMRAIDMPClosableView != nil) {
         return self.fakeMRAIDMPClosableView;
@@ -213,7 +212,7 @@
                      }];
 }
 
-- (MRBridge *)buildMRBridgeWithWebView:(UIWebView *)webView delegate:(id<MRBridgeDelegate>)delegate
+- (MRBridge *)buildMRBridgeWithWebView:(MPWebView *)webView delegate:(id<MRBridgeDelegate>)delegate
 {
     return [self returnFake:self.fakeMRBridge
                      orCall:^{
@@ -221,11 +220,9 @@
                      }];
 }
 
-- (UIWebView *)buildUIWebViewWithFrame:(CGRect)frame
+- (MPWebView *)buildMPWebViewWithFrame:(CGRect)frame
 {
-    return [self returnFake:self.fakeUIWebView orCall:^id{
-        return [super buildUIWebViewWithFrame:frame];
-    }];
+    return [self buildMPWebViewWithFrame:frame delegate:nil];
 }
 
 - (MRVideoPlayerManager *)buildMRVideoPlayerManagerWithDelegate:(id<MRVideoPlayerManagerDelegate>)delegate
@@ -345,30 +342,6 @@
                      orCall:^{
                          return [super buildGADInterstitialAd];
                      }];
-}
-
-#pragma mark Greystripe
-
-- (GSBannerAdView *)buildGreystripeBannerAdViewWithDelegate:(id<GSAdDelegate>)delegate GUID:(NSString *)GUID size:(CGSize)size;
-{
-    if (self.fakeGSBannerAdView) {
-        self.fakeGSBannerAdView.delegate = delegate;
-        self.fakeGSBannerAdView.GUID = GUID;
-        return self.fakeGSBannerAdView;
-    } else {
-        return [super buildGreystripeBannerAdViewWithDelegate:delegate GUID:GUID size:size];
-    }
-}
-
-- (GSFullscreenAd *)buildGSFullscreenAdWithDelegate:(id<GSAdDelegate>)delegate GUID:(NSString *)GUID
-{
-    if (self.fakeGSFullscreenAd) {
-        self.fakeGSFullscreenAd.delegate = delegate;
-        self.fakeGSFullscreenAd.GUID = GUID;
-        return self.fakeGSFullscreenAd;
-    } else {
-        return [super buildGSFullscreenAdWithDelegate:delegate GUID:GUID];
-    }
 }
 
 #pragma mark InMobi
