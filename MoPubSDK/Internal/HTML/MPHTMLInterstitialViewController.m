@@ -9,6 +9,7 @@
 #import "MPWebView.h"
 #import "MPAdDestinationDisplayAgent.h"
 #import "MPInstanceProvider.h"
+#import "MPViewabilityTracker.h"
 
 @interface MPHTMLInterstitialViewController ()
 
@@ -48,19 +49,22 @@
     [self.backingViewAgent loadConfiguration:configuration];
 
     self.backingView = self.backingViewAgent.view;
+    [self.view addSubview:self.backingView];
     self.backingView.frame = self.view.bounds;
     self.backingView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
     UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:self.backingView];
-    
-    // -- add explicit close button instead of relying on html embedded close button, by Victor
-    UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    closeButton.frame = CGRectMake(0, 0, 40, 40);
-    NSBundle *bundle = [NSBundle bundleForClass:[MPHTMLInterstitialViewController class]];
-    [closeButton setImage:[UIImage imageWithContentsOfFile:[bundle pathForResource:@"MPCloseButtonX" ofType:@"png"]] forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(dismissInterstitialAnimated:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:closeButton];
 
+    if (@available(iOS 11, *)) {
+        self.backingView.translatesAutoresizingMaskIntoConstraints = NO;
+        [NSLayoutConstraint activateConstraints:@[
+                                                  [self.backingView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+                                                  [self.backingView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+                                                  [self.backingView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+                                                  [self.backingView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+                                                  ]];
+    }
+
+    [self.backingViewAgent.viewabilityTracker registerFriendlyObstructionView:self.closeButton];
 }
 
 - (void)willPresentInterstitial
